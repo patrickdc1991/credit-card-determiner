@@ -7,10 +7,11 @@ class CreditCardDeterminer {
 		return "";
 	}
 	
-	private static boolean luhnValid(String input) {
+	public static boolean luhnValid(String input) {
+		int len = input.length();
 		String doubledList = "";
-		for(int i = 0; i < input.length(); i++) {
-			int digit = Character.getNumericValue(input.charAt(input.length() - i));
+		for(int i = 0; i < len; i++) {
+			int digit = Character.getNumericValue(input.charAt(len-1-i));
 			if (i % 2 == 1) {
 				digit *= 2;
 			}
@@ -18,7 +19,7 @@ class CreditCardDeterminer {
 		}
 		int sum = 0;
 		for(int i = 0; i < doubledList.length(); i++) {
-			sum += Character.getNumericValue(input.charAt(i));
+			sum += Character.getNumericValue(doubledList.charAt(i));
 		}
 		return sum % 10 == 0;
 	}
