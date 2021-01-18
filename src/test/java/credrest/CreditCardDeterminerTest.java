@@ -1,5 +1,8 @@
 package credrest;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
@@ -9,52 +12,29 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.Gson;
+
 public class CreditCardDeterminerTest {
-	
+		
 	@Test
-	public void invalidNumberTest() {
-		String[] validNums = {
-				"1",
-				"112",
-				"1234567890987654321234567890987654321",
-				"0"
-		};
-		String[] invalidNums = {
-				"123456a",
-				"-123456",
-				"abcdef",
-				"abc def",
-				"123 456"
-		};
-		List<String> falsePositives = new ArrayList<String>();
-		for(String cardNum : invalidNums) {
-			if(CreditCardDeterminer.stringIsPositiveNumber(cardNum)) {
-				falsePositives.add(cardNum);
-			}
-		}
-		
-		List<String> falseNegatives = new ArrayList<String>();
-		for(String cardNum : validNums) {
-			if(!CreditCardDeterminer.stringIsPositiveNumber(cardNum)) {
-				falseNegatives.add(cardNum);
-			}
-		}
-		
-		if(!falsePositives.isEmpty() || !falseNegatives.isEmpty()) {
-			StringBuffer msg = new StringBuffer();
-			msg.append("The following invalid strings were not " +
-					"marked as invalid:\n");
-			for(String cardNum: falsePositives) {
-				msg.append(cardNum + "\n");
-			}
-			msg.append("The following valid strings were " +
-					"marked as invalid:\n");
-			for(String cardNum: falseNegatives) {
-				msg.append(cardNum + "\n");
-			}
-			fail(msg.toString());
-		}
+	public void CardTest() {
+		assertAll("card tests",
+				() -> cardAssert("4111111111111111","VISA","valid"),
+				() -> cardAssert("4111111111111","VISA","invalid"),
+				() -> cardAssert("4012888888881881","VISA","valid"),
+				() -> cardAssert("378282246310005","AMEX","valid"),
+				() -> cardAssert("6011111111111117","Discover","valid"),
+				() -> cardAssert("5105105105105100","MasterCard","valid"),
+				() -> cardAssert("5105 1051 0510 5106","MasterCard","invalid"),
+				() -> cardAssert("9111111111111111","Unknown","invalid")
+			);
 	}
-	
+
+	private void cardAssert(String input, String expectedType, String expectedValidity) {
+		Gson gson = new Gson();
+		CardInformation expected = new CardInformation(input, expectedType, expectedValidity);
+		CardInformation actual = CreditCardDeterminer.determine(input);
+		assertEquals(gson.toJson(expected),gson.toJson(actual));		
+	}
 	
 }

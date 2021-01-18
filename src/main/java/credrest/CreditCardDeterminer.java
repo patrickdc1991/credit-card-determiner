@@ -1,36 +1,33 @@
 package credrest;
-import credrest.CardInformation;
-import java.util.*;
 
 class CreditCardDeterminer {
 	
 	public static CardInformation determine(String input) {
 		CardInformation cardInformation = new CardInformation();
-		
-		if(!stringIsPositiveNumber(input)) {
-			cardInformation.setCardNumber(input);
-			cardInformation.setCardType("Unknown");
-			cardInformation.setIsLuhnValid("INVALID");
+		cardInformation.setCardNumber(input);
+		String cardNumber = input.replaceAll("\\s+", "");
+		if(!stringIsPositiveNumber(cardNumber)) {
+			cardInformation.setCardType("Not a number");
+			cardInformation.setIsLuhnValid("Not a number");
 			return cardInformation;
 		}
 		
-		cardInformation.setCardNumber(input);
-		if(isAmex(input)) {
-			cardInformation.setCardType("Amex");
-		} else if(isDiscover(input)) {
+		if(isAmex(cardNumber)) {
+			cardInformation.setCardType("AMEX");
+		} else if(isDiscover(cardNumber)) {
 			cardInformation.setCardType("Discover");
-		} else if(isMastercard(input)) {
-			cardInformation.setCardType("Mastercard");
-		} else if(isVisa(input)) {
-			cardInformation.setCardType("Visa");
+		} else if(isMastercard(cardNumber)) {
+			cardInformation.setCardType("MasterCard");
+		} else if(isVisa(cardNumber)) {
+			cardInformation.setCardType("VISA");
 		} else {
 			cardInformation.setCardType("Unknown");
 		}
 		
-		if(LuhnAlgorithm.validate(input)) {
-			cardInformation.setIsLuhnValid("VALID");
+		if(LuhnAlgorithm.validate(cardNumber)) {
+			cardInformation.setIsLuhnValid("valid");
 		} else {
-			cardInformation.setIsLuhnValid("INVALID");
+			cardInformation.setIsLuhnValid("invalid");
 		}
 		return cardInformation;
 	}
@@ -79,8 +76,8 @@ class CreditCardDeterminer {
 	
 	public static boolean isVisa(String input) {
 		if(input.length()==16 || input.length()==13) {
-			int firstTwo = Integer.parseInt(input.substring(0,2));
-			if(firstTwo >= 51 && firstTwo <= 54) {
+			int first = Integer.parseInt(input.substring(0,1));
+			if(first == 4) {
 				return true;
 			}
 		}
