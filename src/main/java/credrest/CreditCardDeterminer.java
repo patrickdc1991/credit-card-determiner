@@ -49,7 +49,7 @@ class CreditCardDeterminer {
 	
 	public static boolean isAmex(String input) {
 		if(input.length() == 15) {
-			int firstTwo = Integer.parseInt(input.substring(0,1));
+			int firstTwo = Integer.parseInt(input.substring(0,2));
 			if(firstTwo == 34 || firstTwo == 37) {
 				return true;
 			}
@@ -59,7 +59,7 @@ class CreditCardDeterminer {
 	
 	public static boolean isDiscover(String input) {
 		if(input.length()==16) {
-			int firstFour = Integer.parseInt(input.substring(0,3));
+			int firstFour = Integer.parseInt(input.substring(0,4));
 			if(firstFour == 6011) {
 				return true;
 			}
@@ -69,7 +69,7 @@ class CreditCardDeterminer {
 	
 	public static boolean isMastercard(String input) {
 		if(input.length()==16) {
-			int firstTwo = Integer.parseInt(input.substring(0,1));
+			int firstTwo = Integer.parseInt(input.substring(0,2));
 			if(firstTwo >= 51 && firstTwo <= 54) {
 				return true;
 			}
@@ -79,7 +79,7 @@ class CreditCardDeterminer {
 	
 	public static boolean isVisa(String input) {
 		if(input.length()==16 || input.length()==13) {
-			int firstTwo = Integer.parseInt(input.substring(0,1));
+			int firstTwo = Integer.parseInt(input.substring(0,2));
 			if(firstTwo >= 51 && firstTwo <= 54) {
 				return true;
 			}
